@@ -23,3 +23,86 @@ news$titleWords <- str_split(news$title, "\\s+")
 all_words = unlist(news$descriptionWords)
 uniqueWords = unique(all_words)
 ```
+
+```{r}
+
+fake_news <- news %>% filter(label == "FAKE")
+fake_news$descriptionWords <- str_split(fake_news$text, "[^A-Za-z0-9]+")
+all_fake_words = unlist(fake_news$descriptionWords)
+fake_counts = table(all_fake_words)
+
+real_news <- news %>% filter(label == "REAL")
+real_news$descriptionWords <- str_split(real_news$text, "[^A-Za-z0-9]+")
+all_real_words = unlist(real_news$descriptionWords)
+real_counts = table(all_real_words)
+
+
+```
+
+
+```{r}
+
+top_100_real_words <- head(sort(real_counts, decreasing = TRUE), 100)
+top_100_real_words
+top_100_fake_words <- head(sort(fake_counts, decreasing = TRUE), 100)
+top_100_fake_words
+```
+
+
+```{r}
+
+find_likelihood = function(word) {
+  fake_sum <- fake_counts[word]
+  real_sum <- real_counts[word]
+  
+  prWordFake <- fake_sum / nrow(fake_news)
+  prWordReal <- real_sum / nrow(real_news)
+  
+  prWord <- prWordFake * .5 + prWordReal * .5
+  
+  likelihood = (prWordFake * .5) / prWord
+  
+  return(likelihood)
+}
+
+find_likelihood("Buy")
+```
+
+```{r}
+
+unused_articles = data.frame(
+  title = c("Atlus Somehow Leaks GTA 6 Trailer Early"),
+  text = c("After leaking their own game, Persona 5 Tactica, on Steam early on Wednesday morning, beloved RPG developer ATLUS has somehow managed to leak the highly-anticipated trailer for Grand Theft Auto 6. “What the hell?” said Rockstar Games president Sam Houser. “We work hard to make some of the most profitable… I mean, impactful games on the market. A big part of that is the hype cycle. First we had the announcement of our trailer spoiled early, now this company that we’ve literally never had anything to do with leaks our trailer? The day after they leaked their own game? At some point, you just have to be impressed by how good they are at leaking.”"),
+  label = c("FAKE")
+)
+
+
+for (i in 1:nrow(unused_articles)) {
+  average_likelihood = 0
+  non_existing_word = 0
+  words = str_split(unused_articles$text[i], "[^A-Za-z0-9]+")
+  for (word in words) {
+    likelihood <- find_likelihood(word)
+    typeof(likel)
+    average_likelihood = average_likelihood + likelihood
+  }
+  for (i in seq_along(average_likelihood)) {
+    print(paste("Average for column", average_likelihood[i]))
+  }
+  print(names(average_likelihood))
+}
+  
+
+```
+
+  
+      
+      print(words[j])
+      average_likelihood = average_likelihood + find_likelihood(words[j])
+    }
+    else {
+      non_existing_word = non_existing_word + 1
+    }
+  }
+  print(average_likelihood)
+  print(non_existing_word)
