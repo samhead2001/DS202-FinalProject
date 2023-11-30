@@ -1,0 +1,25 @@
+---
+title: "Final Project"
+author: "Sam Husted, Brynn Vanhorn"
+date: "2023-11-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+news = read.csv("news.csv")
+```
+
+
+```{r cars}
+summary(news)
+```
+
+```{r pressure, echo=FALSE}
+library(stringr)
+library(dplyr)
+any(is.na(news))
+news$descriptionWords <- str_split(news$text, "\\s+")
+news$titleWords <- str_split(news$title, "\\s+")
+all_words = unlist(news$descriptionWords)
+uniqueWords = unique(all_words)
+```
